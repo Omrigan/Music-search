@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">music-search</string>
+    <string name="enter">Enter!</string>
+    <string-array name="places_array">
+        <item>Зарубежная эстрада</item>
+        <item>Русская эстрада</item>
+        <item>Казахская эстрада</item>
+    </string-array>
+    <string-array name="atr_array">
+        <item>Название</item>
+        <item>Исполнитель</item>
+        <item>Текст</item>
+    </string-array>
 </resources>
