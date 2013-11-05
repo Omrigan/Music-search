@@ -12,4 +12,5 @@
         <item>Исполнитель</item>
         <item>Текст</item>
     </string-array>
+    <string name="stop">Остановить музыку</string>
 </resources>
