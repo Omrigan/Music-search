@@ -13,4 +13,6 @@
         <item>Текст</item>
     </string-array>
     <string name="stop">Остановить музыку</string>
+    <string name="aboutUs">О нас</string>
+    <string name="about">Music searcher. Developed by Omrigan. Be lucky!</string>
 </resources>

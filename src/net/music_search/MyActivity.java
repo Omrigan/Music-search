@@ -26,7 +26,7 @@ public class MyActivity extends Activity {
     public void onClick(View view){
         EditText txt = (EditText) findViewById(R.id.editText);
         String str1 = myUtils.md5(txt.getText().toString());
-        String str2 = myUtils.md5("password");
+        String str2 = mSettings.getString("password", "password");
       if(str1.equals(str2)){
 
           Intent intent = new Intent(this, MainActivity.class);
@@ -35,7 +35,7 @@ public class MyActivity extends Activity {
 
       }
         else{
-           Toast toast = Toast.makeText(getApplicationContext(), "Неправильный пароль!", Toast.LENGTH_SHORT);
+           Toast toast = Toast.makeText(getApplicationContext(), "Неправильный пароль! " + mSettings.getString("password", "password"), Toast.LENGTH_SHORT);
             toast.show();
 
         }

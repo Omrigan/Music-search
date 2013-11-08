@@ -1,6 +1,8 @@
 package net.music_search;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -106,6 +108,10 @@ public class MainActivity extends Activity {
             case R.id.menu_stop:
                 mediaPlayer.stop();
                 break;
+            case R.id.menu_about:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                break;
         }
         return true;
     }
@@ -118,12 +124,18 @@ public class MainActivity extends Activity {
         int MetaId = (int) spin.getSelectedItemId();
 
         List<String> result = new ArrayList<String>();
+     try{
         for(int i=0;i<list.size();i++){
             if(list.get(i).get(MetaId+1).toLowerCase().contains(s)){
-                result.add(list.get(i).get(1) + "# " +  list.get(i).get(2) + " Автор: " + list.get(i).get(3));
+
+                result.add(i + "# " +  list.get(i).get(1) + " Автор: " + list.get(i).get(2));
             }
 
         }
+     } catch (Exception e){
+         e.printStackTrace();
+         ///ToDO: make real catch for exep
+     }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,	android.R.layout.simple_list_item_1, result);
         ListView lv = (ListView)  findViewById(R.id.listView);
@@ -164,6 +176,11 @@ public class MainActivity extends Activity {
 
      return file;
     }
+ public void readDB(){
+     DbOpenHelper dbOpenHelper = new DbOpenHelper(MainActivity.this);
+     SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+
+ }
  public List<List<String>> getErrorList(String s){
      toast = Toast.makeText(getApplicationContext(),s, Toast.LENGTH_SHORT);
      toast.show();
