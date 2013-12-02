@@ -15,13 +15,13 @@ public class MyActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        mSettings = getSharedPreferences("MSsettings", Context.MODE_PRIVATE);
+      /*  mSettings = getSharedPreferences("MSsettings", Context.MODE_PRIVATE);
         if (!mSettings.contains("password")) {
 
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putString("password", myUtils.md5("password"));
             editor.apply();
-        }
+        }        */
     }
     public void onClick(View view){
         EditText txt = (EditText) findViewById(R.id.editText);

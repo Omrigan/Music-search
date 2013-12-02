@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <RelativeLayout
-            android:layout_width="fill_parent"
+<RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android" android:background="@android:color/holo_green_light"
+        android:alpha="0.8">
+
+    <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/button"/>
+    <ListView
+            android:layout_width="231dp"
             android:layout_height="fill_parent"
-            xmlns:android="http://schemas.android.com/apk/res/android">
-     	<EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/editText"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                />
+            android:layout_below="@id/spinner"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@id/button1"
+            android:id="@+id/listView1" android:background="@android:color/holo_blue_dark" android:alpha="0.8"
+            />
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="O"
+            android:id="@+id/button"
+            android:layout_alignRight="@+id/listView1" android:layout_above="@+id/listView1" android:onClick="onClick"/>
+    <EditText
+            android:layout_width="381dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/editText"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/button"
+            android:layout_toRightOf="@id/button" android:background="@android:color/holo_orange_dark"
+            android:alpha="0.8"/>
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@id/editText"
+            android:layout_below="@+id/editText"
+            android:layout_alignParentRight="true" android:background="@android:color/darker_gray"
+            style="@android:style/Holo.Light.ButtonBar" android:alpha="0.8"
+            android:layout_alignBottom="@+id/listView1"/>
 
 
-        <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="110dp"
-                android:id="@+id/listView"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/editText"
-                android:layout_above="@+id/spinner1"/>
-        <Spinner
-                android:layout_width="133dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner1"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:spinnerMode="dropdown"/>
-        <Spinner
-                android:layout_width="133dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner2"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"/>
-
-
-        
-    </RelativeLayout>
+</RelativeLayout>
 
 

@@ -1,0 +1,257 @@
+diff a/src/net/music_search/MainActivity.java b/src/net/music_search/MainActivity.java	(rejected hunks)
+@@ -22,77 +22,39 @@
+ 
+ 
+ public class MainActivity extends Activity {
++    final String LOG_TAG = "myLogs";
+ 
+     Toast toast;
+-    List<List<String>> list;
++
+     MediaPlayer mediaPlayer = new MediaPlayer();
++    SQLiteDatabase db;
++    AdapterView.OnItemClickListener listVListener;
++    TextWatcher txtListener;
++    TabHost.OnTabChangeListener tabHostListener;
+     @Override
+     public void onCreate(Bundle savedInstanceState) {
++        Log.d(LOG_TAG, "Start!");
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.secound);
+-        Spinner spinner = (Spinner) findViewById(R.id.spinner1);
+-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.places_array, android.R.layout.simple_spinner_item);
+-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+-        spinner.setAdapter(adapter);
+-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+-            @Override
+-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+-                list = readFileSD(position);
+-                search("");
+-            }
+-
+-            @Override
+-            public void onNothingSelected(AdapterView<?> parentView) {
++        init();
++        db = openDB();
++        searchInSongs("");
++        ListView lv_b = (ListView) findViewById(R.id.listView1);
++        lv_b.setAdapter(getAuthersAdapter(0));
++        lv_b = (ListView) findViewById(R.id.listView1);
++        lv_b.setAdapter(getAuthersAdapter(1));
++        lv_b = (ListView) findViewById(R.id.listView1);
++        lv_b.setAdapter(getAuthersAdapter(2));
+ 
+-            }
+-        });
+-        list = readFileSD(0);
+-        search("");
+-        spinner = (Spinner) findViewById(R.id.spinner2);
+-        adapter = ArrayAdapter.createFromResource(this,R.array.atr_array, android.R.layout.simple_spinner_item);
+-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+-        spinner.setAdapter(adapter);
+ 
+ 
+         EditText txt = (EditText) findViewById(R.id.editText);
+-        txt.addTextChangedListener(new TextWatcher() {
+-            public void afterTextChanged(Editable s) {
+-                search(s.toString());
+-            }
++        txt.addTextChangedListener(txtListener);
+ 
+-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+-            }
+-
+-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+-            }
+-        });
+         ListView listV = (ListView) findViewById(R.id.listView);
+-            listV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+-            public void onItemClick(AdapterView parentView, View childView,int position, long id)
+-            {
+-                try{
+-                    mediaPlayer.stop();
+-                    mediaPlayer = new MediaPlayer();
+-                    mediaPlayer.setDataSource(Environment.getExternalStorageDirectory().getPath() + "/MusicSearcher/" + Integer.toString(position) + ".mp3");
+-                    mediaPlayer.prepare();
+-                    mediaPlayer.start();
+-                }
+-                catch (FileNotFoundException e) {
+-                    e.printStackTrace();
+-                    toast = Toast.makeText(getApplicationContext(),  "Файл не найден: " +  e.getLocalizedMessage(), Toast.LENGTH_SHORT);
+-                    toast.show();
+-                } catch (IOException e) {
+-                    e.printStackTrace();
+-                    toast = Toast.makeText(getApplicationContext(), "Ошибка ввода/выводв: " +  e.getLocalizedMessage(), Toast.LENGTH_SHORT);
+-                    toast.show();
+-                }
+-                catch (Exception e){
+-                    toast = Toast.makeText(getApplicationContext(), "Непонятное исключение, скорее всего файл не найден: " +  Environment.getExternalStorageDirectory().getPath() + "/MusicSearcher/" + Integer.toString(position) + ".mp3", Toast.LENGTH_LONG);
+-                    toast.show();
+-                }
+-            }
+-
+-        });
++        listV.setOnItemClickListener(listVListener);
++        TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
++       // tabHost.setOnTabChangedListener(tabHostListener);
+ 
+ 
+     }
+@@ -115,83 +77,98 @@
+         }
+         return true;
+     }
+- public void search(String s){
+-
++    public void onClick(View view){
++        switch(view.getId()){
++            case R.id.button:
++                EditText txt = (EditText) findViewById(R.id.editText);
++                searchInAuthers(txt.getText().toString());
++            break;
++        }
++    }
++    public void searchInSongs(String s){
+         s = s.toLowerCase();
+-        Spinner spin = (Spinner) findViewById(R.id.spinner1);
+-        int LocId = (int) spin.getSelectedItemId();
+-        spin = (Spinner) findViewById(R.id.spinner2);
+-        int MetaId = (int) spin.getSelectedItemId();
+-
+         List<String> result = new ArrayList<String>();
+-     try{
+-        for(int i=0;i<list.size();i++){
+-            if(list.get(i).get(MetaId+1).toLowerCase().contains(s)){
+-
+-                result.add(i + "# " +  list.get(i).get(1) + " Автор: " + list.get(i).get(2));
+-            }
+-
+-        }
+-     } catch (Exception e){
+-         e.printStackTrace();
+-         ///ToDO: make real catch for exep
+-     }
+ 
++         ///ToDO: make search in songs
+         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,	android.R.layout.simple_list_item_1, result);
+         ListView lv = (ListView)  findViewById(R.id.listView);
+         lv.setAdapter(adapter);
+     }
+- public List<List<String>> readFileSD(int type) {
+-     List<List<String>> file = new ArrayList<List<String>>();
+-       if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+-
+-            return getErrorList("SD-карта не доступна: " + Environment.getExternalStorageState());
+-        }
+-        File sdPath = Environment.getExternalStorageDirectory();
+-        sdPath = new File(sdPath.getAbsolutePath() + "/MusicSearcher/db" + Integer.toString(type) + ".txt");
+-        try {
+-            BufferedReader br = new BufferedReader(new FileReader(sdPath));
+-            String str = "";
+-            int i=0;
+-            // читаем содержимое
+-            while ((str = br.readLine()) != null) {
+-                Log.d("My_logs ",str);
+-                List<String>  myList = new ArrayList<String>(Arrays.asList(str.split(";")));
+-                myList.add(0,Integer.toString(i));
+-                file.add(myList);
+-
+-                i++;
+-            }
+-        } catch (FileNotFoundException e) {
+-            e.printStackTrace();
+-            return getErrorList("Файл не найден: " +  e.getLocalizedMessage());
+-        } catch (IOException e) {
+-            e.printStackTrace();
+-            return getErrorList("Ошибка файловой системы, скорее всего файл не найден: " +  e.getLocalizedMessage());
+-        }
+-     catch (Exception e){
+-         e.printStackTrace();
+-         return getErrorList("Непонятное исключение: " +  e.getLocalizedMessage());
+-     }
++    public void searchInAuthers(String s){
++        TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
++        int num_b = tabHost.getCurrentTab();
++        Log.d(LOG_TAG, Integer.toString(num_b));
++        s = s.toLowerCase();
++        List<String> result = new ArrayList<String>();
+ 
+-     return file;
++        ///ToDO: make search in authers
++        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,	android.R.layout.simple_list_item_1, result);
++        ListView lv = (ListView)  findViewById(R.id.listView);
++        lv.setAdapter(adapter);
++    }
++    public ArrayAdapter<String> getAuthersAdapter(int num_b){
++        List<String> outList = new ArrayList<String>();
++        //TODO: read from db
++        db.execSQL("select name from authors_" + num_b + " ");
++        return  new ArrayAdapter<String>(this,	android.R.layout.simple_list_item_1, outList);
+     }
+- public void readDB(){
++    public SQLiteDatabase openDB(){
+      DbOpenHelper dbOpenHelper = new DbOpenHelper(MainActivity.this);
+-     SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+-
++     return dbOpenHelper.getWritableDatabase();
+  }
+- public List<List<String>> getErrorList(String s){
++    public List<String> getErrorList(String s){
+      toast = Toast.makeText(getApplicationContext(),s, Toast.LENGTH_SHORT);
+      toast.show();
+-     List<List<String>> file = new ArrayList<List<String>>();
+      List<String> myList = new ArrayList<String>();
+      myList.add("0");
+      myList.add("Name");
+      myList.add("Avtor");
+      myList.add("Text");
+-     file.add(myList);
+-     return file;
++     return myList;
+  }
++    public void init(){
++        listVListener = new AdapterView.OnItemClickListener() {
++
++            public void onItemClick(AdapterView parentView, View childView,int position, long id)
++            {
++                try{
++                    mediaPlayer.stop();
++                    mediaPlayer = new MediaPlayer();
++                    mediaPlayer.setDataSource(Environment.getExternalStorageDirectory().getPath() + "/MusicSearcher/" + Integer.toString(position) + ".mp3");
++                    mediaPlayer.prepare();
++                    mediaPlayer.start();
++                }
++                catch (FileNotFoundException e) {
++                    e.printStackTrace();
++                    toast = Toast.makeText(getApplicationContext(),  "Файл не найден: " +  e.getLocalizedMessage(), Toast.LENGTH_SHORT);
++                    toast.show();
++                } catch (IOException e) {
++                    e.printStackTrace();
++                    toast = Toast.makeText(getApplicationContext(), "Ошибка ввода/выводв: " +  e.getLocalizedMessage(), Toast.LENGTH_SHORT);
++                    toast.show();
++                }
++                catch (Exception e){
++                    toast = Toast.makeText(getApplicationContext(), "Непонятное исключение, скорее всего файл не найден: " +  Environment.getExternalStorageDirectory().getPath() + "/MusicSearcher/" + Integer.toString(position) + ".mp3", Toast.LENGTH_LONG);
++                    toast.show();
++                }
++            }
+ 
++        };
++        txtListener = new TextWatcher() {
++            public void afterTextChanged(Editable s) {
++                searchInSongs(s.toString());
++            }
++
++            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
++            }
++
++            public void onTextChanged(CharSequence s, int start, int before, int count) {
++            }
++        };
++    /*    tabHostListener =  new TabHost.OnTabChangeListener(){
++            public void onTabChanged(String tabId) {
++
++            }
++        };  */
++    }
+ }

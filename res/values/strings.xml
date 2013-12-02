@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">music-search</string>
     <string name="enter">Enter!</string>
-    <string-array name="places_array">
+    <string-array name="_b">
         <item>Зарубежная эстрада</item>
         <item>Русская эстрада</item>
         <item>Казахская эстрада</item>
